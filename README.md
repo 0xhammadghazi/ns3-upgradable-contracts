@@ -92,3 +92,35 @@
     scripts/
     test/
     ```
+13. **To compile contracts**, run:
+
+    ```bash
+    npx hardhat compile
+    ```
+
+14. **To run tests**, execute:
+
+    ```bash
+    npx hardhat test
+    ```
+
+15. **To deploy contracts locally**, run:
+
+    ```bash
+    npx hardhat run ./scripts/script_name.sol
+    ```
+
+    **E.g.**:
+
+    ```bash
+    npx hardhat run ./scripts/deployEnsRegistry.sol
+    ```
+
+16. **To deploy on a testnet/mainnet and verify it**, run:
+    ```bash
+    npx hardhat run ./scripts/script_name.sol --network networkName
+    ```
+    **E.g.**:
+    ```bash
+    npx hardhat run ./scripts/deployEnsRegistry.sol --network sepolia
+    ```
