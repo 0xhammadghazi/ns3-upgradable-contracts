@@ -1,0 +1,29 @@
+{
+  "name": "ns3-upgradable-contracts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xhammadghazi/ns3-upgradable-contracts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0xhammadghazi/ns3-upgradable-contracts/issues"
+  },
+  "homepage": "https://github.com/0xhammadghazi/ns3-upgradable-contracts#readme",
+  "devDependencies": {
+    "@openzeppelin/hardhat-upgrades": "^3.3.0",
+    "hardhat": "^2.22.11"
+  },
+  "dependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts-upgradeable": "^5.0.2",
+    "dotenv": "^16.4.5"
+  }
+}
