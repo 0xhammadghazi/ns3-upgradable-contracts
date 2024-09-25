@@ -97,20 +97,28 @@ describe("ETHRegistrarControllerUpgradeable", function () {
       reverseRegistrarAddress
     );
 
-    const Resolver = await ethers.getContractFactory("PublicResolver");
-    resolverContractInstance = await Resolver.deploy(
-      ensRegistryProxyAddress,
-      ZERO_ADDRESS,
-      ZERO_ADDRESS,
-      reverseRegistrarAddress
+    const ResolverUpgradeable = await ethers.getContractFactory(
+      "PublicResolverUpgradeable"
     );
-    await resolverContractInstance.waitForDeployment();
+    resolverUpgradeableContractInstance = await upgrades.deployProxy(
+      ResolverUpgradeable,
+      [
+        ensRegistryProxyAddress,
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        reverseRegistrarAddress,
+      ]
+    );
+    await resolverUpgradeableContractInstance.waitForDeployment();
 
-    resolverAddress = await resolverContractInstance.getAddress();
+    resolverUpgradeableAddress =
+      await resolverUpgradeableContractInstance.getAddress();
 
-    // console.log("Resolver Address: " + resolverAddress);
+    // console.log("Resolver Upgradeable Address: " + resolverUpgradeableAddress);
 
-    await reverseRegistrarContractInstance.setDefaultResolver(resolverAddress);
+    await reverseRegistrarContractInstance.setDefaultResolver(
+      resolverUpgradeableAddress
+    );
 
     const NameWrapper = await ethers.getContractFactory("NameWrapper");
 

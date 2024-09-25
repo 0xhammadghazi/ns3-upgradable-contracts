@@ -11,14 +11,20 @@ import "./profiles/NameResolver.sol";
 import "./profiles/PubkeyResolver.sol";
 import "./profiles/TextResolver.sol";
 import "./Multicallable.sol";
-import {ReverseClaimer} from "../reverseRegistrar/ReverseClaimer.sol";
 import {INameWrapper} from "../wrapper/INameWrapper.sol";
+import {IReverseRegistrar} from "../reverseRegistrar/IReverseRegistrar.sol";
+
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 /**
  * A simple resolver anyone can use; only allows the owner of a node to set its
  * address.
  */
-contract PublicResolver is
+contract PublicResolverUpgradeable is
+    UUPSUpgradeable,
+    OwnableUpgradeable,
     Multicallable,
     ABIResolver,
     AddrResolver,
@@ -27,13 +33,15 @@ contract PublicResolver is
     InterfaceResolver,
     NameResolver,
     PubkeyResolver,
-    TextResolver,
-    ReverseClaimer
+    TextResolver
 {
-    ENS immutable ens;
-    INameWrapper immutable nameWrapper;
-    address immutable trustedETHController;
-    address immutable trustedReverseRegistrar;
+    bytes32 constant ADDR_REVERSE_NODE =
+        0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2;
+
+    ENS public ens;
+    INameWrapper public nameWrapper;
+    address public trustedETHController;
+    address public trustedReverseRegistrar;
 
     /**
      * A mapping of operators. An address that is authorised for an address
@@ -67,17 +75,31 @@ contract PublicResolver is
         bool indexed approved
     );
 
-    constructor(
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(
         ENS _ens,
         INameWrapper wrapperAddress,
         address _trustedETHController,
         address _trustedReverseRegistrar
-    ) ReverseClaimer(_ens, msg.sender) {
+    ) public initializer {
+        __Ownable_init();
         ens = _ens;
         nameWrapper = wrapperAddress;
         trustedETHController = _trustedETHController;
         trustedReverseRegistrar = _trustedReverseRegistrar;
+
+        IReverseRegistrar reverseRegistrar = IReverseRegistrar(
+            ens.owner(ADDR_REVERSE_NODE)
+        );
+        reverseRegistrar.claim(msg.sender);
     }
+
+    ///@dev required by the OZ UUPS module
+    function _authorizeUpgrade(address) internal override onlyOwner {}
 
     /**
      * @dev See {IERC1155-setApprovalForAll}.

@@ -17,12 +17,17 @@ async function main() {
 
   let ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-let owner = "0x96A4BEd8e08e5d8bb91214Bada1f146842692dd6";
+let owner;
 
-  console.log("Deploying ETHRegistrarControllerUpgradeable...");
+const network = hre.network.name;
 
+if (network === "hardhat" || network === "localhost") {
+            // Use local signers if no specific network is specified
+            [owner, addr1, addr2] = await ethers.getSigners();
+}else{ owner = "0x96A4BEd8e08e5d8bb91214Bada1f146842692dd6";
+}
 
- // Deploy necessary smart contracts
+    // Deploy necessary smart contracts
     const ENSRegistryUpgradeable = await ethers.getContractFactory(
       "ENSRegistryUpgradeable"
     );
@@ -87,80 +92,36 @@ let owner = "0x96A4BEd8e08e5d8bb91214Bada1f146842692dd6";
 
     console.log("Reverse Registrar Address: " + reverseRegistrarAddress);
 
+  console.log("Setting subnode ownder #1");
     await ensRegistryContractInstance.setSubnodeOwner(
       ROOT_NODE,
       labelhash("reverse"),
       owner
     );
+
+  console.log("Setting subnode ownder #2");
     await ensRegistryContractInstance.setSubnodeOwner(
       namehash.hash("reverse"),
       labelhash("addr"),
       reverseRegistrarAddress
     );
 
-    const Resolver = await ethers.getContractFactory("PublicResolver");
-    resolverContractInstance = await Resolver.deploy(
-      ensRegistryProxyAddress,
-      ZERO_ADDRESS,
-      ZERO_ADDRESS,
-      reverseRegistrarAddress
-    );
-    await resolverContractInstance.waitForDeployment();
 
-    resolverAddress = await resolverContractInstance.getAddress();
+  const PublicResolverUpgradeable = await ethers.getContractFactory("PublicResolverUpgradeable");
 
-     console.log("Resolver Address: " + resolverAddress);
+  console.log("Deploying PublicResolverUpgradeable...");
 
-    await reverseRegistrarContractInstance.setDefaultResolver(resolverAddress);
+  const Proxy = await upgrades.deployProxy(PublicResolverUpgradeable, [ensRegistryProxyAddress,ZERO_ADDRESS,ZERO_ADDRESS,reverseRegistrarAddress]);
+  await Proxy.waitForDeployment();
 
-    const NameWrapper = await ethers.getContractFactory("NameWrapper");
+   proxyAddress = await Proxy.getAddress();
 
-    nameWrapperContractInstance = await NameWrapper.deploy(
-      ensRegistryProxyAddress,
-      baseRegistrarAddress,
-      ZERO_ADDRESS
-    );
-
-    await nameWrapperContractInstance.waitForDeployment();
-
-    nameWrapperAddress = await nameWrapperContractInstance.getAddress();
-
-     console.log("Name Wrapper Address: " + nameWrapperAddress);
-
-    const ETHRegistrarControllerUpgradeable = await ethers.getContractFactory(
-      "ETHRegistrarControllerUpgradeable"
-    );
-
-    // Deploy the contract
-    contractInstance = await upgrades.deployProxy(
-      ETHRegistrarControllerUpgradeable,
-      [
-        baseRegistrarAddress,
-        MIN_AGE, // min commitment age
-        MAX_AGE, /// max commitment age
-        reverseRegistrarAddress,
-        nameWrapperAddress,
-        ensRegistryProxyAddress,
-      ]
-    );
-    await contractInstance.waitForDeployment();
-
-    proxyAddress = await contractInstance.getAddress();
-
-
-
-console.log("Proxy ETHRegistrarControllerUpgradeable deployed to:", proxyAddress);
+  console.log("Proxy PublicResolverUpgradeable deployed to:", proxyAddress);
 
   const currentImplAddress = await upgrades.erc1967.getImplementationAddress(
     proxyAddress
   );
 
-  console.log("ETHRegistrarControllerUpgradeable Implementation address ", currentImplAddress);
+  console.log("PublicResolverUpgradeable Implementation address ", currentImplAddress);
 }
-
-// Delay function: pauses execution for the specified number of milliseconds
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 main();

@@ -1,6 +1,8 @@
 # EthRegistrar Controller Upgradeable Steps
 
-1. **Replace all** Import Statements with these:
+1. **Change file name** of `ETHRegistrarController.sol` to `ETHRegistrarControllerUpgradeable.sol`.
+
+2. **Replace all** Import Statements with these:
 
 ```solidity
 import {BaseRegistrarImplementation} from "./BaseRegistrarImplementation.sol";
@@ -18,7 +20,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 ```
 
-2. **Update contract declaration** inside `ETHRegistrarController.sol` from:
+3. **Update contract declaration** inside `ETHRegistrarController.sol` from:
 
    ```solidity
    contract ETHRegistrarController is
@@ -38,7 +40,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
     IERC165
    ```
 
-3. **Add** these state variables:
+4. **Add** these state variables:
 
 ```solidity
 bytes32 constant ADDR_REVERSE_NODE =
@@ -46,14 +48,13 @@ bytes32 constant ADDR_REVERSE_NODE =
 address public admin;
 ```
 
-4. **Remove** the `immutable` keyword from **all** state variables.
+5. **Remove** the `immutable` keyword from **all** state variables.
 
-5. **Change the visibility** of the `base` state variable to `public`.
+6. **Change the visibility** of the `base` state variable to `public`.
 
+7. **Add** the following event and modifier:
 
-6. **Add** the following event and modifier:
-
-````solidity
+```solidity
 event ContractOwnershipTransferred(
     address indexed previousOwner,
     address indexed newOwner
@@ -64,9 +65,9 @@ modifier onlyAdmin() {
     require(admin == msg.sender, "Ownable: caller is not the owner");
     _;
 }
-````
+```
 
-7. **Replace** the constructor with the following code:
+8. **Replace** the constructor with the following code:
 
 ```solidity
 /// @custom:oz-upgrades-unsafe-allow constructor
@@ -132,9 +133,9 @@ function transferContractOwnership(address newAdmin) external onlyAdmin {
 
 /// @dev required by the OZ UUPS module
 function _authorizeUpgrade(address) internal override onlyAdmin {}
-````
+```
 
-8. **Change the parameter** of the payable function inside the `withdraw` function from `owner()` to `admin`:
+9. **Change the parameter** of the payable function inside the `withdraw` function from `owner()` to `admin`:
 
 ```solidity
     function withdraw() public {
@@ -142,7 +143,7 @@ function _authorizeUpgrade(address) internal override onlyAdmin {}
     }
 ```
 
-9. **Import** the `Ownable` contract **in** `BulkRenewal.sol`:
+10. **Import** the `Ownable` contract **in** `BulkRenewal.sol`:
 
 ```solidity
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
@@ -151,4 +152,4 @@ Replace `ETHRegistrarController` with `ETHRegistrarControllerUpgradeable` inside
 
 ```
 
-10. **One significant change** is that in the upgradeable version, we are not inheriting the `ReverseClaimer.sol` contract and the `ERC20Recoverable.sol` contract. Instead, we've copied their code inside `ETHRegistrarControllerUpgradeable.sol`. Any changes made in `ReverseClaimer.sol` or `ERC20Recoverable.sol` must be made manually inside `ETHRegistrarControllerUpgradeable.sol`.
+11. **One significant change** is that in the upgradeable version, we are not inheriting the `ReverseClaimer.sol` contract and the `ERC20Recoverable.sol` contract. Instead, we've copied their code inside `ETHRegistrarControllerUpgradeable.sol`. Any changes made in `ReverseClaimer.sol` or `ERC20Recoverable.sol` must be made manually inside `ETHRegistrarControllerUpgradeable.sol`.
