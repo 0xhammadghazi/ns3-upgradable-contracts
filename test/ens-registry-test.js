@@ -31,9 +31,8 @@ describe("ENSRegistryUpgradeable", function () {
     expect(rootNodeOwner).to.equal(owner.address);
     expect(contractOwner).to.equal(owner.address);
 
-    await expect(contractInstance.initialize()).to.be.revertedWithCustomError(
-      contractInstance,
-      "InvalidInitialization"
+    await expect(contractInstance.initialize()).to.be.revertedWith(
+      "Initializable: contract is already initialized"
     );
   });
 

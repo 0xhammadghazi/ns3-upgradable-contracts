@@ -22,8 +22,14 @@
     "hardhat": "^2.22.11"
   },
   "dependencies": {
+    "@ensdomains/buffer": "^0.1.1",
+    "@ensdomains/ensjs": "^4.0.1-alpha.0",
+    "@ensdomains/solsha1": "^0.0.3",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "@openzeppelin/contracts-upgradeable": "^5.0.2",
-    "dotenv": "^16.4.5"
+    "@openzeppelin/contracts": "^4.9.6",
+    "@openzeppelin/contracts-upgradeable": "^4.9.6",
+    "buffer": "^6.0.3",
+    "dotenv": "^16.4.5",
+    "eth-ens-namehash": "^2.0.8"
   }
 }

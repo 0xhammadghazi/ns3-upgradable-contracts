@@ -1,18 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.4;
 
-import "./ENSUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "./ENS.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 /**
  * The ENS registry contract.
  */
-contract ENSRegistryUpgradeable is
-    ENSUpgradeable,
-    Initializable,
-    UUPSUpgradeable
-{
+contract ENSRegistryUpgradeable is ENS, UUPSUpgradeable {
     struct Record {
         address owner;
         address resolver;
@@ -32,6 +27,7 @@ contract ENSRegistryUpgradeable is
     // Permits modifications only by the owner of the specified node.
     modifier authorised(bytes32 node) {
         address owner = records[node].owner;
+
         require(
             owner == msg.sender || operators[owner][msg.sender],
             "Not authorised"
@@ -133,6 +129,7 @@ contract ENSRegistryUpgradeable is
         address owner
     ) public virtual override authorised(node) returns (bytes32) {
         bytes32 subnode = keccak256(abi.encodePacked(node, label));
+
         _setOwner(subnode, owner);
         emit NewOwner(node, label, owner);
         return subnode;

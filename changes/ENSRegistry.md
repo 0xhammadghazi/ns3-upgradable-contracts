@@ -1,20 +1,15 @@
 # ENSRegistry Upgradeable Steps
 
-1. **Change file name** of `ENS.sol` to `ENSUpgradeable.sol`.
-2. **Change interface name** inside `ENS.sol` from `interface ENS` to `interface ENSUpgradeable`.
+1. **Change file name** of `ENSRegistry.sol` to `ENSRegistryUpgradeable.sol`.
 
-3. **Change file name** of `ENSRegistry.sol` to `ENSRegistryUpgradeable.sol`.
-
-4. **Update import** in `ENSRegistry.sol` from `import "./ENS.sol"` to `import "./ENSUpgradeable.sol"`.
-
-5. **Import the following OpenZeppelin files** in `ENSRegistryUpgradeable.sol`:
+2. **Import the following OpenZeppelin files** in `ENSRegistryUpgradeable.sol`:
 
    ```solidity
    import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
    import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
    ```
 
-6. **Update contract declaration** inside `ENSRegistry.sol` from:
+3. **Update contract declaration** inside `ENSRegistry.sol` from:
 
    ```solidity
    contract ENSRegistry is ENS
@@ -29,7 +24,7 @@
        UUPSUpgradeable
    ```
 
-7. **Replace the constructor** in `ENSRegistryUpgradeable` with the following:
+4. **Replace the constructor** in `ENSRegistryUpgradeable` with the following:
 
    ```solidity
    // Only allows admin to upgrade logic contract
@@ -66,7 +61,7 @@
    }
    ```
 
-8. **Add the following code snippet** above the `onlyAdmin` modifier in `ENSRegistryUpgradeable`:
+5. **Add the following code snippet** above the `onlyAdmin` modifier in `ENSRegistryUpgradeable`:
 
    ```solidity
    address public admin;
@@ -77,7 +72,8 @@
    );
    ```
 
-9. **Add the following license identifier** at the top of `ENSRegistryUpgradeable.sol`:
+6. **Add the following license identifier** at the top of `ENSRegistryUpgradeable.sol`:
    ```solidity
    // SPDX-License-Identifier: MIT
    ```
+7. **Make sure to replace `ENSRegistry` with `ENSRegistryUpgradeable` in all files importing `ENSRegistry`**.
