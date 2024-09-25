@@ -93,7 +93,7 @@ module.exports = {
 };
 ```
 
-10. **Create a `.env` file** and add the following entries:
+14. **Create a `.env` file** and add the following entries:
 
     ```
     PRIVATE_KEY =
@@ -101,7 +101,7 @@ module.exports = {
     INFURA_API_KEY =
     ```
 
-11. **Create a `.gitignore` file** and add the following lines:
+15. **Create a `.gitignore` file** and add the following lines:
 
     ```
     node_modules/
@@ -110,25 +110,25 @@ module.exports = {
     .env
     ```
 
-12. **Create the following directories** in your project structure:
+16. **Create the following directories** in your project structure:
     ```
     contracts/
     scripts/
     test/
     ```
-13. **To compile contracts**, run:
+17. **To compile contracts**, run:
 
     ```bash
     npx hardhat compile
     ```
 
-14. **To run tests**, execute:
+18. **To run tests**, execute:
 
     ```bash
     npx hardhat test
     ```
 
-15. **To deploy contracts locally**, run:
+19. **To deploy contracts locally**, run:
 
     ```bash
     npx hardhat run ./scripts/script_name.sol
@@ -140,7 +140,7 @@ module.exports = {
     npx hardhat run ./scripts/deployEnsRegistry.sol
     ```
 
-16. **To deploy on a testnet/mainnet and verify it**, run:
+20. **To deploy on a testnet/mainnet and verify it**, run:
     ```bash
     npx hardhat run ./scripts/script_name.sol --network networkName
     ```
