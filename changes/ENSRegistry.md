@@ -24,6 +24,13 @@
 3. **Replace the constructor** in `ENSRegistry` with the following:
 
    ```solidity
+    address public admin;
+
+   event OwnershipTransferred(
+       address indexed previousOwner,
+       address indexed newOwner
+   );
+
    // Only allows admin to upgrade logic contract
    modifier onlyAdmin() {
        require(admin == msg.sender, "Not authorised");
@@ -58,18 +65,7 @@
    }
    ```
 
-4. **Add the following code snippet** above the `onlyAdmin` modifier in `ENSRegistry`:
-
-   ```solidity
-   address public admin;
-
-   event OwnershipTransferred(
-       address indexed previousOwner,
-       address indexed newOwner
-   );
-   ```
-
-5. **Add the following license identifier** at the top of `ENSRegistry.sol`:
+4. **Add the following license identifier** at the top of `ENSRegistry.sol`:
    ```solidity
    // SPDX-License-Identifier: MIT
    ```
