@@ -1,8 +1,6 @@
-# PublicResolver Upgradeable Steps
+# Changes Made for PublicResolver Upgradeability
 
-1. **Change file name** of `PublicResolver.sol` to `PublicResolverUpgradeable.sol`.
-
-2. **Append** the following import statements:
+1. **Append** the following import statements:
 
 ```solidity
   import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
@@ -10,13 +8,13 @@
   import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 ```
 
-3. **Remove** the following import statement:
+2. **Remove** the following import statement:
 
 ```solidity
 import {ReverseClaimer} from "../reverseRegistrar/ReverseClaimer.sol";
 ```
 
-4. **Update contract declaration** inside `PublicResolverUpgradeable.sol` from:
+3. **Update contract declaration** inside `PublicResolver.sol` from:
 
    ```solidity
    contract PublicResolver is
@@ -35,7 +33,7 @@ import {ReverseClaimer} from "../reverseRegistrar/ReverseClaimer.sol";
    To:
 
    ```solidity
-   contract PublicResolverUpgradeable is
+   contract PublicResolver is
     UUPSUpgradeable,
     OwnableUpgradeable,
     Multicallable,
@@ -49,7 +47,7 @@ import {ReverseClaimer} from "../reverseRegistrar/ReverseClaimer.sol";
     TextResolver
    ```
 
-5. **Add** the following state variable:
+4. **Add** the following state variable:
 
 ```solidity
 bytes32 constant ADDR_REVERSE_NODE =
@@ -57,11 +55,11 @@ bytes32 constant ADDR_REVERSE_NODE =
 address public admin;
 ```
 
-6. **Remove** the `immutable` keyword from **all** state variables.
+5. **Remove** the `immutable` keyword from **all** state variables.
 
-7. **Change the visibility** of the **all** state variable to `public`.
+6. **Change the visibility** of the **all** state variable to `public`.
 
-8. **Replace** the constructor with the following code:
+7. **Replace** the constructor with the following code:
 
 ```solidity
       /// @custom:oz-upgrades-unsafe-allow constructor
@@ -91,4 +89,4 @@ address public admin;
     function _authorizeUpgrade(address) internal override onlyOwner {}
 ```
 
-9. **One significant change** is that in the upgradeable version, we are not inheriting the `ReverseClaimer.sol` contract. Instead, we've copied it's code inside `PublicResolverUpgradeable.sol`.Any changes made in `ReverseClaimer.sol` must be made manually inside `PublicResolverUpgradeable.sol`.
+8. **One significant change** is that in the upgradeable version, we are not inheriting the `ReverseClaimer.sol` contract. Instead, we've copied it's code inside `PublicResolver.sol`.Any changes made in `ReverseClaimer.sol` must be made manually inside `PublicResolver.sol`.
