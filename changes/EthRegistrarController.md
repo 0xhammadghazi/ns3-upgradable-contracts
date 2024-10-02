@@ -150,11 +150,10 @@ mapping(bytes32 => uint256) public commitments;
 ```
 
 3. **Remove** the following functions:
-```
-`makeCommitment`
-`commit`
-`_consumeCommitment`
-```
+- `makeCommitment`
+- `commit`
+- `_consumeCommitment`
+
 
 4. **Replace** the `register` function with the following code:
 ```solidity
