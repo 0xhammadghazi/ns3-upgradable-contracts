@@ -73,8 +73,6 @@ contract ETHRegistrarController is
         INameWrapper _nameWrapper,
         ENS _ens
     ) public initializer {
-   
-
         admin = msg.sender;
         base = _base;
         reverseRegistrar = _reverseRegistrar;

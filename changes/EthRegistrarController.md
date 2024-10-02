@@ -50,7 +50,7 @@ address public admin;
 
 5. **Change the visibility** of the `base` state variable to `public`.
 
-6. **Add** the following event and modifier:
+6. **Replace** the constructor with the following code:
 
 ```solidity
 event ContractOwnershipTransferred(
@@ -63,11 +63,7 @@ modifier onlyAdmin() {
     require(admin == msg.sender, "Ownable: caller is not the owner");
     _;
 }
-```
 
-7. **Replace** the constructor with the following code:
-
-```solidity
 /// @custom:oz-upgrades-unsafe-allow constructor
 constructor() {
     _disableInitializers();
@@ -121,7 +117,7 @@ function transferContractOwnership(address newAdmin) external onlyAdmin {
 function _authorizeUpgrade(address) internal override onlyAdmin {}
 ```
 
-8. **Change the parameter** of the payable function inside the `withdraw` function from `owner()` to `admin`:
+7. **Change the parameter** of the payable function inside the `withdraw` function from `owner()` to `admin`:
 
 ```solidity
     function withdraw() public {
@@ -129,4 +125,4 @@ function _authorizeUpgrade(address) internal override onlyAdmin {}
     }
 ```
 
-9. **One significant change** is that in the upgradeable version, we are not inheriting the `ReverseClaimer.sol` contract and the `ERC20Recoverable.sol` contract. Instead, we've copied their code inside `ETHRegistrarController.sol`. Any changes made in `ReverseClaimer.sol` or `ERC20Recoverable.sol` must be made manually inside `ETHRegistrarController.sol`.
+8. **One significant change** is that in the upgradeable version, we are not inheriting the `ReverseClaimer.sol` contract and the `ERC20Recoverable.sol` contract. Instead, we've copied their code inside `ETHRegistrarController.sol`. Any changes made in `ReverseClaimer.sol` or `ERC20Recoverable.sol` must be made manually inside `ETHRegistrarController.sol`.
