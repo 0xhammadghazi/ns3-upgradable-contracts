@@ -31,7 +31,7 @@ if (network === "hardhat" || network === "localhost") {
 
  // Deploy necessary smart contracts
     const ENSRegistryUpgradeable = await ethers.getContractFactory(
-      "ENSRegistryUpgradeable"
+      "ENSRegistry"
     );
 
     ensRegistryContractInstance = await upgrades.deployProxy(
@@ -105,7 +105,7 @@ if (network === "hardhat" || network === "localhost") {
       reverseRegistrarAddress
     );
 
-    const Resolver = await ethers.getContractFactory("PublicResolverUpgradeable");
+    const Resolver = await ethers.getContractFactory("PublicResolver");
     resolverContractInstance = await upgrades.deployProxy(Resolver,[
       ensRegistryProxyAddress,
       ZERO_ADDRESS,
@@ -135,7 +135,7 @@ if (network === "hardhat" || network === "localhost") {
      console.log("Name Wrapper Address: " + nameWrapperAddress);
 
     const ETHRegistrarControllerUpgradeable = await ethers.getContractFactory(
-      "ETHRegistrarControllerUpgradeable"
+      "ETHRegistrarController"
     );
 
     // Deploy the contract
@@ -143,8 +143,6 @@ if (network === "hardhat" || network === "localhost") {
       ETHRegistrarControllerUpgradeable,
       [
         baseRegistrarAddress,
-        MIN_AGE, // min commitment age
-        MAX_AGE, /// max commitment age
         reverseRegistrarAddress,
         nameWrapperAddress,
         ensRegistryProxyAddress,

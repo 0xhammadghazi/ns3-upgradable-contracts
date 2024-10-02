@@ -7,7 +7,7 @@ describe("ENSRegistryUpgradeable", function () {
 
   beforeEach(async function () {
     const ENSRegistryUpgradeable = await ethers.getContractFactory(
-      "ENSRegistryUpgradeable"
+      "ENSRegistry"
     );
 
     // Get signers
@@ -63,7 +63,7 @@ describe("ENSRegistryUpgradeable", function () {
     // );
 
     const ENSRegistryUpgradeableV2 = await ethers.getContractFactory(
-      "ENSRegistryUpgradeable"
+      "ENSRegistry"
     );
 
     // SHOULD FAIL UPGRADE IF CALLER IS NOT ADDRESS

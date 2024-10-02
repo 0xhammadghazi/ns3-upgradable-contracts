@@ -15,16 +15,10 @@ import {INameWrapper} from "../wrapper/INameWrapper.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-error CommitmentTooNew(bytes32 commitment);
-error CommitmentTooOld(bytes32 commitment);
 error NameNotAvailable(string name);
 error DurationTooShort(uint256 duration);
 error ResolverRequiredWhenDataSupplied();
-error UnexpiredCommitmentExists(bytes32 commitment);
-error InsufficientValue();
-error Unauthorised(bytes32 node);
-error MaxCommitmentAgeTooLow();
-error MaxCommitmentAgeTooHigh();
+
 
 // REMOVED WITHDRAW FN FOR TESTING
 
@@ -36,7 +30,7 @@ contract MockETHRegistrarController is
     IETHRegistrarController,
     IERC165
 {
-    using StringUtils for *;
+      using StringUtils for *;
     using Address for address;
 
     uint256 public constant MIN_REGISTRATION_DURATION = 28 days;
@@ -46,12 +40,9 @@ contract MockETHRegistrarController is
     bytes32 constant ADDR_REVERSE_NODE =
         0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2;
     BaseRegistrarImplementation public base;
-    uint256 public minCommitmentAge;
-    uint256 public maxCommitmentAge;
     ReverseRegistrar public reverseRegistrar;
     INameWrapper public nameWrapper;
 
-    mapping(bytes32 => uint256) public commitments;
 
     address public admin;
 
@@ -84,36 +75,6 @@ contract MockETHRegistrarController is
     ) public reinitializer(2) {
         base = _base;
     }
-
-    // function initialize(
-    //     BaseRegistrarImplementation _base,
-    //     uint256 _minCommitmentAge,
-    //     uint256 _maxCommitmentAge,
-    //     ReverseRegistrar _reverseRegistrar,
-    //     INameWrapper _nameWrapper,
-    //     ENS _ens
-    // ) public initializer {
-    //     if (_maxCommitmentAge <= _minCommitmentAge) {
-    //         revert MaxCommitmentAgeTooLow();
-    //     }
-
-    //     if (_maxCommitmentAge > block.timestamp) {
-    //         revert MaxCommitmentAgeTooHigh();
-    //     }
-
-    //     admin = msg.sender;
-    //     base = _base;
-    //     minCommitmentAge = _minCommitmentAge;
-    //     maxCommitmentAge = _maxCommitmentAge;
-    //     reverseRegistrar = _reverseRegistrar;
-    //     nameWrapper = _nameWrapper;
-
-    //     // ReverseClaimer stuff
-    //     IReverseRegistrar reverseRegistrar_ = IReverseRegistrar(
-    //         _ens.owner(ADDR_REVERSE_NODE)
-    //     );
-    //     reverseRegistrar_.claim(msg.sender);
-    // }
 
     /**
     @notice Recover ERC20 tokens sent to the contract by mistake.
@@ -153,66 +114,28 @@ contract MockETHRegistrarController is
         return valid(name) && base.available(uint256(label));
     }
 
-    function makeCommitment(
-        string memory name,
-        address owner,
-        uint256 duration,
-        bytes32 secret,
-        address resolver,
-        bytes[] calldata data,
-        bool reverseRecord,
-        uint16 ownerControlledFuses
-    ) public pure override returns (bytes32) {
-        bytes32 label = keccak256(bytes(name));
-        if (data.length > 0 && resolver == address(0)) {
-            revert ResolverRequiredWhenDataSupplied();
-        }
-        return
-            keccak256(
-                abi.encode(
-                    label,
-                    owner,
-                    duration,
-                    secret,
-                    resolver,
-                    data,
-                    reverseRecord,
-                    ownerControlledFuses
-                )
-            );
-    }
-
-    function commit(bytes32 commitment) public override onlyAdmin {
-        if (commitments[commitment] + maxCommitmentAge >= block.timestamp) {
-            revert UnexpiredCommitmentExists(commitment);
-        }
-        commitments[commitment] = block.timestamp;
-    }
-
-    function register(
+   
+function register(
         string calldata name,
         address owner,
         uint256 duration,
-        bytes32 secret,
         address resolver,
         bytes[] calldata data,
         bool reverseRecord,
         uint16 ownerControlledFuses
     ) public override onlyAdmin {
-        _consumeCommitment(
-            name,
-            duration,
-            makeCommitment(
-                name,
-                owner,
-                duration,
-                secret,
-                resolver,
-                data,
-                reverseRecord,
-                ownerControlledFuses
-            )
-        );
+     if (data.length > 0 && resolver == address(0)) {
+            revert ResolverRequiredWhenDataSupplied();
+        }
+
+    if (!available(name)) {
+            revert NameNotAvailable(name);
+        }
+
+
+        if (duration < MIN_REGISTRATION_DURATION) {
+            revert DurationTooShort(duration);
+        }
 
         uint256 expires = nameWrapper.registerAndWrapETH2LD(
             name,
@@ -254,30 +177,6 @@ contract MockETHRegistrarController is
 
     /* Internal functions */
 
-    function _consumeCommitment(
-        string memory name,
-        uint256 duration,
-        bytes32 commitment
-    ) internal {
-        // Require an old enough commitment.
-        if (commitments[commitment] + minCommitmentAge > block.timestamp) {
-            revert CommitmentTooNew(commitment);
-        }
-
-        // If the commitment is too old, or the name is registered, stop
-        if (commitments[commitment] + maxCommitmentAge <= block.timestamp) {
-            revert CommitmentTooOld(commitment);
-        }
-        if (!available(name)) {
-            revert NameNotAvailable(name);
-        }
-
-        delete (commitments[commitment]);
-
-        if (duration < MIN_REGISTRATION_DURATION) {
-            revert DurationTooShort(duration);
-        }
-    }
 
     function _setRecords(
         address resolverAddress,

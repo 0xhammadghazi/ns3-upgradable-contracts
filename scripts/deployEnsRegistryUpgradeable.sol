@@ -1,7 +1,7 @@
 const { ethers, upgrades } = require("hardhat");
 
 async function main() {
-  const ENSRegistryUpgradeable = await ethers.getContractFactory("ENSRegistryUpgradeable");
+  const ENSRegistryUpgradeable = await ethers.getContractFactory("ENSRegistry");
 
   console.log("Deploying ENSRegistryUpgradeable...");
 
@@ -18,12 +18,15 @@ async function main() {
 
   console.log("ENSRegistryUpgradeable Implementation address ", currentImplAddress);
 
+
+ if (network.name !== 'hardhat' && network.name !== 'localhost') {
+
   // Delay function for 10 seconds (10000 milliseconds)
   await delay(10000);
 
   // Verify the new implementation contract on Etherscan
   console.log("Verifying ENSRegistryUpgradeable implementation contract after 1 minute...");
-
+  
   try {
     await hre.run("verify:verify", {
       address: currentImplAddress,
@@ -33,6 +36,7 @@ async function main() {
   } catch (err) {
     console.log("ENSRegistryUpgradeable implementation Verification failed:", err);
   }
+}
 }
 
 // Delay function: pauses execution for the specified number of milliseconds

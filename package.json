@@ -19,7 +19,7 @@
   "homepage": "https://github.com/0xhammadghazi/ns3-upgradable-contracts#readme",
   "devDependencies": {
     "@openzeppelin/hardhat-upgrades": "^3.3.0",
-    "hardhat": "^2.22.11"
+    "hardhat": "^2.22.12"
   },
   "dependencies": {
     "@ensdomains/buffer": "^0.1.1",

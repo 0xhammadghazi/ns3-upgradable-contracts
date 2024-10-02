@@ -29,7 +29,7 @@ if (network === "hardhat" || network === "localhost") {
 
     // Deploy necessary smart contracts
     const ENSRegistryUpgradeable = await ethers.getContractFactory(
-      "ENSRegistryUpgradeable"
+      "ENSRegistry"
     );
 
     ensRegistryContractInstance = await upgrades.deployProxy(
@@ -107,7 +107,7 @@ if (network === "hardhat" || network === "localhost") {
     );
 
 
-  const PublicResolverUpgradeable = await ethers.getContractFactory("PublicResolverUpgradeable");
+  const PublicResolverUpgradeable = await ethers.getContractFactory("PublicResolver");
 
   console.log("Deploying PublicResolverUpgradeable...");
 

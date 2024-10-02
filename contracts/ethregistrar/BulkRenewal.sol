@@ -2,7 +2,7 @@
 pragma solidity ~0.8.17;
 
 import "../registry/ENS.sol";
-import "./ETHRegistrarControllerUpgradeable.sol";
+import "./ETHRegistrarController.sol";
 import "./IETHRegistrarController.sol";
 import "../resolvers/Resolver.sol";
 import "./IBulkRenewal.sol";
@@ -23,11 +23,11 @@ contract BulkRenewal is IBulkRenewal, Ownable {
     function getController()
         internal
         view
-        returns (ETHRegistrarControllerUpgradeable)
+        returns (ETHRegistrarController)
     {
         Resolver r = Resolver(ens.resolver(ETH_NAMEHASH));
         return
-            ETHRegistrarControllerUpgradeable(
+            ETHRegistrarController(
                 r.interfaceImplementer(
                     ETH_NAMEHASH,
                     type(IETHRegistrarController).interfaceId
@@ -39,7 +39,7 @@ contract BulkRenewal is IBulkRenewal, Ownable {
         string[] calldata names,
         uint256 duration
     ) external override {
-        ETHRegistrarControllerUpgradeable controller = getController();
+        ETHRegistrarController controller = getController();
         uint256 length = names.length;
         for (uint256 i = 0; i < length; ) {
             controller.renew(names[i], duration);

@@ -22,7 +22,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
  * A simple resolver anyone can use; only allows the owner of a node to set its
  * address.
  */
-contract PublicResolverUpgradeable is
+contract PublicResolver is
     UUPSUpgradeable,
     OwnableUpgradeable,
     Multicallable,

@@ -7,7 +7,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 /**
  * The ENS registry contract.
  */
-contract ENSRegistryUpgradeable is ENS, UUPSUpgradeable {
+contract ENSRegistry is ENS, UUPSUpgradeable {
     struct Record {
         address owner;
         address resolver;

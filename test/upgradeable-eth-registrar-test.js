@@ -23,7 +23,7 @@ describe("ETHRegistrarControllerUpgradeable", function () {
 
     // Deploy necessary smart contracts
     const ENSRegistryUpgradeable = await ethers.getContractFactory(
-      "ENSRegistryUpgradeable"
+      "ENSRegistry"
     );
 
     ensRegistryContractInstance = await upgrades.deployProxy(
@@ -98,7 +98,7 @@ describe("ETHRegistrarControllerUpgradeable", function () {
     );
 
     const ResolverUpgradeable = await ethers.getContractFactory(
-      "PublicResolverUpgradeable"
+      "PublicResolver"
     );
     resolverUpgradeableContractInstance = await upgrades.deployProxy(
       ResolverUpgradeable,
@@ -135,7 +135,7 @@ describe("ETHRegistrarControllerUpgradeable", function () {
     //  console.log("Name Wrapper Address: " + nameWrapperAddress);
 
     const ETHRegistrarControllerUpgradeable = await ethers.getContractFactory(
-      "ETHRegistrarControllerUpgradeable"
+      "ETHRegistrarController"
     );
 
     // Deploy the contract
@@ -143,8 +143,6 @@ describe("ETHRegistrarControllerUpgradeable", function () {
       ETHRegistrarControllerUpgradeable,
       [
         baseRegistrarAddress,
-        MIN_AGE, // min commitment age
-        MAX_AGE, /// max commitment age
         reverseRegistrarAddress,
         nameWrapperAddress,
         ensRegistryProxyAddress,
@@ -185,17 +183,10 @@ describe("ETHRegistrarControllerUpgradeable", function () {
     const nameWrapperContract = await contractInstance.nameWrapper();
     expect(nameWrapperContract).to.equal(nameWrapperAddress);
 
-    const minCommitAge = await contractInstance.minCommitmentAge();
-    expect(minCommitAge).to.equal(MIN_AGE);
-
-    const maxCommitAge = await contractInstance.maxCommitmentAge();
-    expect(maxCommitAge).to.equal(MAX_AGE);
 
     await expect(
       contractInstance.initialize(
         baseRegistrarAddress,
-        MIN_AGE, // min commitment age
-        MAX_AGE, /// max commitment age
         reverseRegistrarAddress,
         nameWrapperAddress,
         ensRegistryProxyAddress

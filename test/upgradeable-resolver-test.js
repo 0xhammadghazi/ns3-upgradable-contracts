@@ -20,7 +20,7 @@ describe("PublicResolverUpgradeable", function () {
 
     // Deploy necessary smart contracts
     const ENSRegistryUpgradeable = await ethers.getContractFactory(
-      "ENSRegistryUpgradeable"
+      "ENSRegistry"
     );
 
     ensRegistryContractInstance = await upgrades.deployProxy(
@@ -95,7 +95,7 @@ describe("PublicResolverUpgradeable", function () {
     );
 
     const PublicResolverUpgradeable = await ethers.getContractFactory(
-      "PublicResolverUpgradeable"
+      "PublicResolver"
     );
 
     // Deploy the contract
@@ -165,7 +165,7 @@ describe("PublicResolverUpgradeable", function () {
 
   it("Upgradeability test", async () => {
     const PublicResolverUpgradeableV2 = await ethers.getContractFactory(
-      "PublicResolverUpgradeable"
+      "PublicResolver"
     );
 
     // SHOULD FAIL UPGRADE IF CALLER IS NOT ADDRESS
