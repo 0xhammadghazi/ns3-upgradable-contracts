@@ -17,8 +17,7 @@
 
    ```solidity
    contract ENSRegistry is
-       ENSUpgradeable,
-       Initializable,
+       ENS,
        UUPSUpgradeable
    ```
 
