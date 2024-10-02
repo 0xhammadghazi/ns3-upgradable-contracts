@@ -1,6 +1,6 @@
 # ETHRegistrarController Changes
 
-## Changes Made for EthRegistrar Controller Upgradeability
+## Changes Made for EthRegistrarController Upgradeability
 
 1. **Replace all** Import Statements with these:
 
@@ -129,10 +129,10 @@ function _authorizeUpgrade(address) internal override onlyAdmin {}
 
 8. **One significant change** is that in the upgradeable version, we are not inheriting the `ReverseClaimer.sol` contract and the `ERC20Recoverable.sol` contract. Instead, we've copied their code inside `ETHRegistrarController.sol`. Any changes made in `ReverseClaimer.sol` or `ERC20Recoverable.sol` must be made manually inside `ETHRegistrarController.sol`.
 
-## ETHRegistrarController changes to remove Commitment feature
+## ETHRegistrarController changes to remove commitment feature
 
-1. **Remove** following error statements:
-```
+1. **Remove** the following error statements:
+```solidity
 error UnexpiredCommitmentExists(bytes32 commitment);
 error InsufficientValue();
 error Unauthorised(bytes32 node);
@@ -142,20 +142,22 @@ error CommitmentTooNew(bytes32 commitment);
 error CommitmentTooOld(bytes32 commitment);
 ```
 
-2. **Remove** following state variables:
-```
+2. **Remove** the following state variables:
+```solidity
 uint256 public minCommitmentAge;
 uint256 public maxCommitmentAge;
 mapping(bytes32 => uint256) public commitments;
 ```
 
-3. **Remove** following functions:
-- `makeCommitment`
-- `commit`
-- `_consumeCommitment`
-
-4. **Replace** `register` function with the following code:
+3. **Remove** the following functions:
 ```
+`makeCommitment`
+`commit`
+`_consumeCommitment`
+```
+
+4. **Replace** the `register` function with the following code:
+```solidity
 function register(
     string calldata name,
     address owner,
