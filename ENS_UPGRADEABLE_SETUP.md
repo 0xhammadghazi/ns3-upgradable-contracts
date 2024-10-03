@@ -118,7 +118,6 @@ module.exports = {
 
 17. **Clone the required ENS contracts** and start making changes as mentioned inside the `changes` folder to make   them upgradeable.
 
-    ```
 18. **To compile contracts**, run:
 
     ```bash
