@@ -46,7 +46,7 @@ Example:
 npx hardhat run ./scripts/deployEnsRegistry.sol
 ```
 
-#### Testnet/Mainnet Deployment and Verification
+#### Testnet/Mainnet Deployment
 ```bash
 npx hardhat run ./scripts/script_name.sol --network networkName
 ```
